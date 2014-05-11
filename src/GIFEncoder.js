@@ -8,6 +8,7 @@
 */
 
 var NeuQuant = require('./TypedNeuQuant.js');
+var SimpleQuant = require('./SimpleQuant.js');
 var LZWEncoder = require('./LZWEncoder.js');
 
 function ByteArray() {
@@ -198,7 +199,7 @@ GIFEncoder.prototype.analyzePixels = function() {
 
   this.indexedPixels = new Uint8Array(nPix);
 
-  var imgq = new NeuQuant(this.pixels, this.sample);
+  var imgq = new SimpleQuant(this.pixels, this.sample);
   imgq.buildColormap(); // create reduced palette
   this.colorTab = imgq.getColormap();
 
