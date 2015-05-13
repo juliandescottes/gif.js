@@ -136,6 +136,14 @@ GIFEncoder.prototype.setTransparent = function(color) {
 };
 
 /*
+  Sets a flag that will force to use the SimpleQuant (less than 256 colors)
+*/
+GIFEncoder.prototype.setPreserveColors = function(preserveColors) {
+  this.preserveColors = preserveColors;
+};
+
+
+/*
   Adds next GIF frame. The frame is not written immediately, but is
   actually deferred until the next frame is received so that timing
   data can be inserted.  Invoking finish() flushes all frames.
@@ -199,7 +207,14 @@ GIFEncoder.prototype.analyzePixels = function() {
 
   this.indexedPixels = new Uint8Array(nPix);
 
-  var imgq = new SimpleQuant(this.pixels, this.sample);
+  var imgq;
+
+  if (this.preserveColors){
+    var transparentComponents = this.toRGBComponents(this.transparent);
+    imgq = new SimpleQuant(this.pixels, this.sample, transparentComponents);
+  } else {
+    imgq = new NeuQuant(this.pixels, this.sample);
+  }
   imgq.buildColormap(); // create reduced palette
   this.colorTab = imgq.getColormap();
 
@@ -223,6 +238,18 @@ GIFEncoder.prototype.analyzePixels = function() {
   if (this.transparent !== null) {
     this.transIndex = this.findClosest(this.transparent);
   }
+};
+
+GIFEncoder.prototype.toRGBComponents = function (color) {
+  var components = null;
+  if (color) {
+    components = {
+      r : (color & 16711680) >> 16,
+      g : (color & 65280) >> 8,
+      b : color & 255
+    };
+  }
+  return components;
 };
 
 /*

@@ -12,6 +12,7 @@ renderFrame = (frame) ->
   encoder.setRepeat frame.repeat
   encoder.setDelay frame.delay
   encoder.setQuality frame.quality
+  encoder.setPreserveColors frame.preserveColors
   encoder.addFrame frame.data
   encoder.finish() if frame.last
 
