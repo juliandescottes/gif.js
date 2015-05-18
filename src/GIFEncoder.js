@@ -271,7 +271,9 @@ GIFEncoder.prototype.findClosest = function(c) {
     var db = b - (this.colorTab[i] & 0xff);
     var d = dr * dr + dg * dg + db * db;
     var index = parseInt(i / 3);
-    if (this.usedEntry[index] && (d < dmin)) {
+
+    var isIndexValid = this.preserveColors || this.usedEntry[index];
+    if (isIndexValid && (d < dmin)) {
       dmin = d;
       minpos = index;
     }
